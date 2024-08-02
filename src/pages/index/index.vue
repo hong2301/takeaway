@@ -24,9 +24,12 @@
         <!-- 商店项 -->
         <view class="business-list" v-for="(item, index) in businessList" :key="index">
           <view class="item-up">
-            <image class="up-img" :src="item.picUrl"></image>
+            <image class="up-img" mode="aspectFill" :src="item.picUrl"></image>
+            <view class="up-certificate">神券</view>
             <view class="up-name">{{ item.shopName }}</view>
-            <view class="up-samllTitle"></view>
+            <view class="up-samllTitle1">{{ item.monthSalesTip }} {{ item.averagePriceTip }}</view>
+            <view class="up-samllTitle2">{{ item.minPriceTip }} {{ item.shippingFeeTip }}</view>
+            <view class="up-samllTitle3">{{ item.deliveryTimeTip }} {{ item.distance }}</view>
           </view>
           <view v-if="item.ad_mark" class="item-down">
             <view class="down-img"></view>
@@ -45,6 +48,7 @@ import { ref } from 'vue'
 
 ////变量区
 let cardOtherstyle = ref() //其他内容卡片的样式，用于滑动隐藏
+let upImgStyle = ref() //图片伸缩样式
 let businessList = ref() //商店列表
 
 ////函数区
@@ -108,14 +112,13 @@ function onScroll(event: eventType) {
 
 <style lang="scss" scoped>
 page {
-  background-color: #f7f7f7;
+  background-color: #e2e0e0;
   height: 100%;
   overflow: hidden;
 }
 .overtrue {
-  width: 100%;
   height: 100%;
-  background-color: aqua;
+  width: 100%;
 }
 .head {
   width: 100%;
@@ -160,7 +163,7 @@ page {
   padding: 1.5%;
   transform: translateY(-10%);
   border-radius: 30px 30px 0 0;
-  background-color: rgb(252, 252, 252);
+  background: linear-gradient(to top, rgb(246, 246, 246), rgb(252, 255, 252));
 }
 .search-box {
   width: 100%;
@@ -228,12 +231,16 @@ uni-button:after {
 .business-list {
   width: 100%;
   height: 25%;
-  background-color: aqua;
   border-radius: 11px;
   padding: 2%;
   margin-bottom: 2%;
   display: flex;
   flex-direction: column;
+  background-color: white;
+  cursor: pointer;
+}
+.business-list:active {
+  background-color: rgb(245, 242, 242);
 }
 .body-scroll {
   width: 100%;
@@ -242,16 +249,71 @@ uni-button:after {
 .item-up {
   width: 100%;
   flex: 1;
-  background-color: antiquewhite;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+.up-img {
+  width: 30%;
+  height: 88%;
+  border-radius: 5px;
+  margin-left: 1%;
+  margin-right: 1%;
+}
+.up-certificate {
+  width: 8%;
+  height: 14%;
+  margin-right: 1%;
+  background-color: black;
+  transform: translateY(-278%);
+  border-radius: 4px;
+  background-color: rgb(235, 89, 56);
+  color: white;
+  font-size: 22rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.up-name {
+  width: 55%;
+  height: 25%;
+  white-space: nowrap; /* 不换行 */
+  overflow: hidden; /* 溢出隐藏 */
+  text-overflow: ellipsis; /* 显示省略号 */
+  font-size: 35rpx;
+  font-weight: 1000;
+  transform: translateY(-150%);
+}
+.up-samllTitle1 {
+  position: absolute;
+  width: 55%;
+  height: 15%;
+  left: 32%;
+  top: 20%;
+  font-size: 23rpx;
+  color: #949191;
+}
+.up-samllTitle2 {
+  position: absolute;
+  width: 55%;
+  height: 15%;
+  left: 33%;
+  top: 37%;
+  font-size: 23rpx;
+  color: #949191;
+}
+.up-samllTitle3 {
+  position: absolute;
+  width: 55%;
+  height: 15%;
+  right: -35%;
+  top: 37%;
+  font-size: 23rpx;
+  color: #949191;
 }
 .item-down {
   width: 100%;
   height: 40%;
   background-color: aquamarine;
-}
-.up-img {
-  height: 100%;
-  background-color: aquamarine;
-  border-radius: 5px;
 }
 </style>

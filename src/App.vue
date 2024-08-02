@@ -11,3 +11,7 @@ onHide(() => {
   console.log('App Hide')
 })
 </script>
+<style lang="scss">
+@import '@/styles/fonts.scss';
+@import '@/styles/base.scss';
+</style>
