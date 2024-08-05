@@ -15,14 +15,19 @@
       <view class="search-box">
         <view class="search-icon"></view>
         <input placeholder="蛙来哒·牛蛙" class="search-input" />
-        <button class="search-button">搜索</button>
+        <button class="search-button" @click="Test">搜索</button>
       </view>
       <!-- 商店滚动区 -->
       <scroll-view class="body-scroll" scroll-y="true" @scroll="onScroll">
         <!-- 其他内容，没有数据支撑，暂时没有渲染细节 -->
         <view class="card-other" :style="cardOtherstyle"></view>
         <!-- 商店项 -->
-        <view class="business-list" v-for="(item, index) in businessList" :key="index">
+        <view
+          class="business-list"
+          v-for="(item, index) in businessList"
+          :key="index"
+          @click="InRestaurant(item)"
+        >
           <view class="item-up">
             <image class="up-img" mode="aspectFill" :src="item.picUrl"></image>
             <view class="up-certificate">神券</view>
@@ -64,6 +69,19 @@ onHide(() => {
   console.log('index Hide')
 })
 
+function Test(value) {
+  console.log('test', value)
+  // uni
+  //   .createSelectorQuery()
+  //   .select('.card-other')
+  //   .fields({ computedStyle: ['width', 'height', 'backgroundColor'] }, (data) => {
+  //     console.log(data)
+  //   })
+  //   .exec()
+  // 同步方式获取
+  // const info = uni.getSystemInfoSync()
+  // console.log('导航栏高度:', info)
+}
 //获取详细商品信息
 function GetCommodity() {
   uni
@@ -72,7 +90,7 @@ function GetCommodity() {
       method: 'GET',
     })
     .then((res) => {
-      console.log(res)
+      //console.log(res)
     })
     .catch((err) => {
       console.log(err)
@@ -88,7 +106,6 @@ function GetBusiness() {
     })
     .then((res) => {
       businessList.value = res.data.data.shopList
-      console.log(businessList.value)
     })
     .catch((err) => {
       console.log(err)
@@ -107,6 +124,9 @@ function onScroll(event: eventType) {
     .exec()
   cardOtherstyle.value = `
   opacity:${(elementHreight - event.detail.scrollTop) / 100};`
+}
+function InRestaurant(item) {
+  console.log('进入餐厅')
 }
 </script>
 
