@@ -7,4 +7,5 @@ export type restaurant = {
   shippingFeeTip: string
   deliveryTimeTip: string
   distance: string
+  mtWmPoiId:number
 }

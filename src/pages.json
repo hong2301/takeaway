@@ -7,8 +7,6 @@
     "custom": {
       // uni-ui 规则如下配置
       "^uni-(.*)": "@dcloudio/uni-ui/lib/uni-$1/uni-$1.vue",
-      // 以 Xtx 开头的组件，在 components 文件夹中查找引入（需要重启服务器）
-      "^Xtx(.*)": "@/components/Xtx$1.vue"
     }
   },
   "pages": [
@@ -19,6 +17,14 @@
         "navigationStyle": "custom",
         "navigationBarTextStyle": "white",
         "navigationBarTitleText": "餐厅"
+      }
+    },
+    {
+      "path": "pages/content/content",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "内容"
       }
     }
   ],

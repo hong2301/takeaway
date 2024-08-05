@@ -48,13 +48,15 @@
 <script setup lang="ts">
 import { onShow, onHide } from '@dcloudio/uni-app'
 import type { eventType } from '@/types/event'
-import type { elementType } from '@/types/element'
+import type { restaurant } from '@/types/restaurant'
+import { useRestaurantStore } from '../../stores/modules/restaurant'
 import { ref } from 'vue'
 
 ////变量区
 let cardOtherstyle = ref() //其他内容卡片的样式，用于滑动隐藏
 let upImgStyle = ref() //图片伸缩样式
 let businessList = ref() //商店列表
+const restaurantStore = useRestaurantStore()
 
 ////函数区
 //页面显示
@@ -125,8 +127,12 @@ function onScroll(event: eventType) {
   cardOtherstyle.value = `
   opacity:${(elementHreight - event.detail.scrollTop) / 100};`
 }
-function InRestaurant(item) {
+function InRestaurant(item: restaurant) {
   console.log('进入餐厅')
+  restaurantStore.setProfile(item)
+  uni.navigateTo({
+    url: '/pages/content/content?id=' + item.mtWmPoiId,
+  });
 }
 </script>
 
