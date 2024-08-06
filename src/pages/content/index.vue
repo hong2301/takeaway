@@ -50,25 +50,44 @@
           <input placeholder="搜索" class="search-input" />
         </view>
       </view>
-      <!--      推荐栏-->
-      <!--      <view class="recommend">-->
-      <!--        <view class="recommend-recommend">-->
-      <!--          <view class="recommend-recommend-icon"></view>-->
-      <!--          <view class="recommend-recommend-text">推荐</view>-->
-      <!--        </view>-->
-      <!--        <view class="recommend-sign">-->
-      <!--          <view class="recommend-sign-fire">-->
-      <!--            <view class="recommend-sign-fire-icon"></view>-->
-      <!--            <view class="recommend-sign-fire-text">招牌</view>-->
-      <!--          </view>-->
-      <!--          <view class="recommend-sign-boss">老板推荐</view>-->
-      <!--        </view>-->
-      <!--      </view>-->
+      <!--            推荐栏-->
+      <!--            <view class="recommend">-->
+      <!--              <view class="recommend-recommend">-->
+      <!--                <view class="recommend-recommend-icon"></view>-->
+      <!--                <view class="recommend-recommend-text">推荐</view>-->
+      <!--              </view>-->
+      <!--              <view class="recommend-sign">-->
+      <!--                <view class="recommend-sign-fire">-->
+      <!--                  <view class="recommend-sign-fire-icon"></view>-->
+      <!--                  <view class="recommend-sign-fire-text">招牌</view>-->
+      <!--                </view>-->
+      <!--                <view class="recommend-sign-boss">老板推荐</view>-->
+      <!--              </view>-->
+      <!--            </view>-->
       <view class="menu-box">
         <view class="menu-box-left">
-          <view class="menu-box-item"></view>
+          <view
+            class="menu-box-item"
+            :class="[item.active ? 'menu-box-item-active' : '']"
+            v-for="(item, index) in sidebar"
+            :key="index"
+            @click="ClickMenu(index)"
+          >
+            <image :src="item.icon" v-if="item.icon !== ''" class="menu-box-item-icon"></image>
+            <view class="menu-box-item-text"> {{ item.name }}</view>
+          </view>
         </view>
-        <view class="menu-box-right"></view>
+        <view class="menu-box-right">
+          <view v-if="sidebarType === 0" class="menu-box-right-recommend">
+            <view class="recommend-sign">
+              <view class="recommend-sign-fire">
+                <view class="recommend-sign-fire-icon"></view>
+                <view class="recommend-sign-fire-text">招牌</view>
+              </view>
+              <view class="recommend-sign-boss">老板推荐</view>
+            </view>
+          </view>
+        </view>
       </view>
     </view>
     <!--      购物车-->
@@ -79,19 +98,30 @@
 <script setup lang="ts">
 import { onMounted, getCurrentInstance, ref } from 'vue'
 import type { restaurant } from '@/types/restaurant'
-import type { commodity } from '@/types/commodity'
+import type { Menu, MeunSidebar } from '@/types/commodity'
 import { useRestaurantStore } from '@/stores/modules/restaurant'
 
 const restaurantStore = useRestaurantStore()
 const businessData = ref<restaurant>()
 let toolbarType = ref<number>(1)
-let commodityData = ref<commodity>()
+let commodityData = ref<Menu>()
+let sidebar = ref<MeunSidebar>([])
+let sidebarType = ref<number>(0)
 
 onMounted(() => {
   GetLocalData()
   GetCommodityData()
   //GetBusinessData()
 })
+
+//点击侧边栏选项
+function ClickMenu(index: number) {
+  sidebarType.value = index
+  sidebar.value.map((item) => {
+    item.active = false
+  })
+  sidebar.value[index].active = true
+}
 function GetBusinessData() {
   const instance = getCurrentInstance()?.proxy
   const eventChannel = instance?.getOpenerEventChannel()
@@ -112,7 +142,17 @@ function GetCommodityData() {
       method: 'GET',
     })
     .then((res) => {
-      console.log(res)
+      commodityData.value = res.data.data
+      console.log(commodityData.value?.food_spu_tags)
+      commodityData.value?.food_spu_tags.forEach((item) => {
+        sidebar.value.push({
+          name: item.name,
+          icon: item.icon,
+          active: false,
+        })
+      })
+      sidebar.value[0].active = true
+      console.log(sidebar.value)
     })
     .catch((err) => {
       console.log(err)

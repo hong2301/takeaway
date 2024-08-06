@@ -20,7 +20,7 @@
       }
     },
     {
-      "path": "pages/content/content",
+      "path": "pages/content/index",
       "style": {
         "navigationStyle": "custom",
         "navigationBarTextStyle": "white",
