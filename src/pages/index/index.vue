@@ -132,7 +132,11 @@ function InRestaurant(item: restaurant) {
   restaurantStore.setProfile(item)
   uni.navigateTo({
     url: '/pages/content/content?id=' + item.mtWmPoiId,
-  });
+    success: function (res) {
+      // 通过eventChannel向被打开页面传送数据
+      res.eventChannel.emit('businessData', { data: item })
+    },
+  })
 }
 </script>
 

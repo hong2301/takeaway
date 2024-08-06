@@ -34,7 +34,18 @@
   </view>
 </template>
 
-<script setup></script>
+<script setup>
+import { onMounted, getCurrentInstance } from 'vue'
+
+onMounted(() => {
+  const instance = getCurrentInstance().proxy
+  const eventChannel = instance.getOpenerEventChannel()
+
+  eventChannel.on('businessData', function (data) {
+    console.log('businessData', data)
+  })
+})
+</script>
 
 <style lang="scss" scoped>
 @import 'head.css';
