@@ -8,7 +8,6 @@ export type MenuItem = {
   name: string
   spus: Array<Spu>
 }
-
 export type Spu = {
   picture: string
   name: string
@@ -21,3 +20,5 @@ export type MeunSidebarItem = {
   icon: string | ''
   active: Boolean | false
 }
+
+export type commodityList = Array<Array<Spu>>

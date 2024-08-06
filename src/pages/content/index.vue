@@ -50,22 +50,8 @@
           <input placeholder="搜索" class="search-input" />
         </view>
       </view>
-      <!--            推荐栏-->
-      <!--            <view class="recommend">-->
-      <!--              <view class="recommend-recommend">-->
-      <!--                <view class="recommend-recommend-icon"></view>-->
-      <!--                <view class="recommend-recommend-text">推荐</view>-->
-      <!--              </view>-->
-      <!--              <view class="recommend-sign">-->
-      <!--                <view class="recommend-sign-fire">-->
-      <!--                  <view class="recommend-sign-fire-icon"></view>-->
-      <!--                  <view class="recommend-sign-fire-text">招牌</view>-->
-      <!--                </view>-->
-      <!--                <view class="recommend-sign-boss">老板推荐</view>-->
-      <!--              </view>-->
-      <!--            </view>-->
-      <view class="menu-box">
-        <view class="menu-box-left">
+      <view class="menu-box" :style="`height:${menuHeight}px`">
+        <view class="menu-box-left" :style="`height:${menuHeight}px`">
           <view
             class="menu-box-item"
             :class="[item.active ? 'menu-box-item-active' : '']"
@@ -77,7 +63,7 @@
             <view class="menu-box-item-text"> {{ item.name }}</view>
           </view>
         </view>
-        <view class="menu-box-right">
+        <scroll-view :style="`height:${menuHeight}px`" class="menu-box-right" scroll-y>
           <view v-if="sidebarType === 0" class="menu-box-right-recommend">
             <view class="recommend-sign">
               <view class="recommend-sign-fire">
@@ -87,18 +73,24 @@
               <view class="recommend-sign-boss">老板推荐</view>
             </view>
           </view>
-        </view>
+          <view class="real-dishes" v-for="(com, index1) in clickCommodity" :key="index1">
+            <image :src="com.picture" class="real-dishes-img"></image>
+            <view class="real-dishes-name">{{ com.name }}</view>
+            <view class="real-dishes-price">¥{{ com.min_price }}</view>
+            <view class="real-dishes-add" @click="Add(com)">+</view>
+          </view>
+        </scroll-view>
       </view>
     </view>
     <!--      购物车-->
-    <view class="shoppingCart"></view>
+    <view class="shoppingCart">¥ {{ showPrice }}</view>
   </view>
 </template>
 
 <script setup lang="ts">
 import { onMounted, getCurrentInstance, ref } from 'vue'
 import type { restaurant } from '@/types/restaurant'
-import type { Menu, MeunSidebar } from '@/types/commodity'
+import type { Menu, MeunSidebar, commodityList, Spu } from '@/types/commodity'
 import { useRestaurantStore } from '@/stores/modules/restaurant'
 
 const restaurantStore = useRestaurantStore()
@@ -107,13 +99,37 @@ let toolbarType = ref<number>(1)
 let commodityData = ref<Menu>()
 let sidebar = ref<MeunSidebar>([])
 let sidebarType = ref<number>(0)
+let commodityLists = ref<commodityList>([])
+let clickCommodity = ref<Array<Spu>>([])
+let menuHeight = ref<string>()
+let price = ref<number>(0)
+let showPrice = ref<number>(0)
 
 onMounted(() => {
+  showPrice.value = restaurantStore.price.toFixed(2)
+  GetHeight()
   GetLocalData()
   GetCommodityData()
   //GetBusinessData()
 })
 
+function Add(item) {
+  restaurantStore.setPrice(restaurantStore.price+item.min_price)
+  showPrice.value = restaurantStore.price.toFixed(2)
+}
+//获取菜单栏的高度
+function GetHeight() {
+  let tempHeight: number
+  uni
+    .createSelectorQuery()
+    .select('.toolbar')
+    .boundingClientRect((data) => {
+      tempHeight = data.bottom
+    })
+    .exec()
+  menuHeight.value = uni.getWindowInfo().windowHeight - tempHeight
+  console.log(menuHeight.value)
+}
 //点击侧边栏选项
 function ClickMenu(index: number) {
   sidebarType.value = index
@@ -121,6 +137,8 @@ function ClickMenu(index: number) {
     item.active = false
   })
   sidebar.value[index].active = true
+  clickCommodity.value = commodityLists.value[index]
+  console.log(clickCommodity.value)
 }
 function GetBusinessData() {
   const instance = getCurrentInstance()?.proxy
@@ -144,15 +162,19 @@ function GetCommodityData() {
     .then((res) => {
       commodityData.value = res.data.data
       console.log(commodityData.value?.food_spu_tags)
+
       commodityData.value?.food_spu_tags.forEach((item) => {
         sidebar.value.push({
           name: item.name,
           icon: item.icon,
           active: false,
         })
+        commodityLists.value?.push(item.spus)
       })
+      clickCommodity.value = commodityLists.value[0]
       sidebar.value[0].active = true
       console.log(sidebar.value)
+      console.log(commodityLists.value)
     })
     .catch((err) => {
       console.log(err)

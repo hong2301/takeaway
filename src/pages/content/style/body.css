@@ -27,7 +27,6 @@
 .menu-box {
   width: 100%;
   height: 100%;
-  background-color: #844cd9;
   display: flex;
   flex-direction: row;
 }
@@ -63,9 +62,11 @@
   background-color: white;
 }
 .menu-box-right {
+  position: relative;
   width: 80%;
   height: 100%;
   background-color: #ffffff;
+  overflow: auto;
 }
 .menu-box-right-recommend{
   height: 80rpx;
@@ -76,10 +77,66 @@
   padding: 2.5%;
   margin-left: 5%;
 }
+.real-dishes{
+  width: 100%;
+  height: 200rpx;
+  margin-bottom: 1px;
+  align-items: center;
+  display: flex;
+  padding: 3%;
+  position: relative;
+}
+.real-dishes-img{
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 10px;
+}
+.real-dishes-name{
+  width: 60%;
+  height: 25%;
+  margin-left: 2%;
+  margin-bottom: 24%;
+  font-weight: 500;
+  font-size: 35rpx;
+  white-space: nowrap; /* 不换行 */
+  overflow: hidden; /* 溢出隐藏 */
+  text-overflow: ellipsis; /* 显示省略号 */
+}
+.real-dishes-price{
+  position: absolute;
+  top: 70%;
+  left: 34%;
+  width: 15%;
+  height: 25%;
+  font-size: 30rpx;
+  color: #ee4545;
+}
+.real-dishes-add{
+  position: absolute;
+  width: 7%;
+  aspect-ratio: 1;
+  background-color:rgb(235,193,80);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  font-size: 25rpx;
+  font-weight: 900;
+  top: 70%;
+  right: 3%;
+  cursor: pointer;
+}
+.real-dishes-add:active{
+  background-color: rgb(143, 114, 39);
+}
 .shoppingCart {
+  display: flex;
+  align-items: center;
+  padding-left: 7%;
+  color: white;
   position: absolute;
   width: 95%;
-  height: 10%;
+  height: 6.2%;
   bottom: 1%;
   left: 50%;
   transform: translateX(-50%);
