@@ -63,7 +63,6 @@ const restaurantStore = useRestaurantStore()
 onShow(() => {
   console.log('index Show')
   GetBusiness()
-  GetCommodity()
 })
 
 //页面隐藏
@@ -83,20 +82,6 @@ function Test(value) {
   // 同步方式获取
   // const info = uni.getSystemInfoSync()
   // console.log('导航栏高度:', info)
-}
-//获取详细商品信息
-function GetCommodity() {
-  uni
-    .request({
-      url: 'https://console-mock.apipost.cn/mock/2574b6b3-81e9-4929-9b74-a38530e92e3e/spuData?apipost_id=35c074',
-      method: 'GET',
-    })
-    .then((res) => {
-      //console.log(res)
-    })
-    .catch((err) => {
-      console.log(err)
-    })
 }
 
 //获取商店列表

@@ -1,4 +1,4 @@
-/** 登录用户信息 */
+/** 餐厅信息 */
 export type restaurant = {
   shopName: string
   monthSalesTip: string
@@ -7,5 +7,6 @@ export type restaurant = {
   shippingFeeTip: string
   deliveryTimeTip: string
   distance: string
-  mtWmPoiId:number
+  mtWmPoiId: number
+  picUrl: string | ''
 }
