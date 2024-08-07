@@ -77,13 +77,15 @@
             <image :src="com.picture" class="real-dishes-img"></image>
             <view class="real-dishes-name">{{ com.name }}</view>
             <view class="real-dishes-price">¥{{ com.min_price }}</view>
-            <view class="real-dishes-add" @click="Add(com)">+</view>
+            <view class="real-dishes-sub" v-if="com.number" @click="Sub(com, index1)">-</view>
+            <view class="real-dishes-number" v-if="com.number">{{ com.number }}</view>
+            <view class="real-dishes-add" @click="Add(com, index1)">+</view>
           </view>
         </scroll-view>
       </view>
     </view>
     <!--      购物车-->
-    <view class="shoppingCart">¥ {{ showPrice }}</view>
+    <view class="shoppingCart" @click="ShowBill">¥ {{ showPrice }}</view>
   </view>
 </template>
 
@@ -102,19 +104,35 @@ let sidebarType = ref<number>(0)
 let commodityLists = ref<commodityList>([])
 let clickCommodity = ref<Array<Spu>>([])
 let menuHeight = ref<string>()
-let price = ref<number>(0)
-let showPrice = ref<number>(0)
+let showPrice = ref<string>()
 
 onMounted(() => {
-  showPrice.value = restaurantStore.price.toFixed(2)
+  showPrice.value = restaurantStore.price!.toFixed(2)
+  if (restaurantStore.menu !== undefined) {
+    commodityLists.value = restaurantStore.menu
+  }
   GetHeight()
   GetLocalData()
   GetCommodityData()
   //GetBusinessData()
 })
 
-function Add(item) {
-  restaurantStore.setPrice(restaurantStore.price+item.min_price)
+function ShowBill() {
+  console.log("结账")
+}
+
+function Add(item, index) {
+  commodityLists.value[sidebarType.value][index].number++
+  clickCommodity.value = commodityLists.value[sidebarType.value]
+  restaurantStore.setMenu(commodityLists.value)
+  restaurantStore.setPrice(restaurantStore.price + item.min_price)
+  showPrice.value = restaurantStore.price.toFixed(2)
+}
+function Sub(item, index) {
+  commodityLists.value[sidebarType.value][index].number--
+  clickCommodity.value = commodityLists.value[sidebarType.value]
+  restaurantStore.setMenu(commodityLists.value)
+  restaurantStore.setPrice(restaurantStore.price - item.min_price)
   showPrice.value = restaurantStore.price.toFixed(2)
 }
 //获取菜单栏的高度
@@ -128,7 +146,6 @@ function GetHeight() {
     })
     .exec()
   menuHeight.value = uni.getWindowInfo().windowHeight - tempHeight
-  console.log(menuHeight.value)
 }
 //点击侧边栏选项
 function ClickMenu(index: number) {
@@ -138,7 +155,6 @@ function ClickMenu(index: number) {
   })
   sidebar.value[index].active = true
   clickCommodity.value = commodityLists.value[index]
-  console.log(clickCommodity.value)
 }
 function GetBusinessData() {
   const instance = getCurrentInstance()?.proxy
@@ -169,12 +185,12 @@ function GetCommodityData() {
           icon: item.icon,
           active: false,
         })
+        item.spus.map((item) => (item.number = 0))
         commodityLists.value?.push(item.spus)
       })
       clickCommodity.value = commodityLists.value[0]
       sidebar.value[0].active = true
-      console.log(sidebar.value)
-      console.log(commodityLists.value)
+      restaurantStore.setMenu(commodityLists.value)
     })
     .catch((err) => {
       console.log(err)
@@ -203,6 +219,7 @@ function Evaluat() {
 @import 'style/body.css';
 @import 'style/face.css';
 @import 'style/toolbar.css';
+@import 'style/menu.css';
 page {
   background-color: #e2e0e0;
   height: 100%;

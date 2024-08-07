@@ -12,6 +12,7 @@ export type Spu = {
   picture: string
   name: string
   min_price: number
+  number: number | 0
 }
 
 export type MeunSidebar = Array<MeunSidebarItem>

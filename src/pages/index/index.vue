@@ -115,6 +115,8 @@ function onScroll(event: eventType) {
 function InRestaurant(item: restaurant) {
   console.log('进入餐厅')
   restaurantStore.setProfile(item)
+  restaurantStore.clearPrice()
+  restaurantStore.clearMenu()
   uni.navigateTo({
     url: '/pages/content/index?id=' + item.mtWmPoiId,
     success: function (res) {
