@@ -19,8 +19,8 @@
       </view>
       <!-- 商店滚动区 -->
       <scroll-view class="body-scroll" scroll-y="true" @scroll="onScroll">
-        <!-- 其他内容，没有数据支撑，暂时没有渲染细节 -->
-        <view class="card-other" :style="cardOtherstyle"></view>
+<!--        &lt;!&ndash; 其他内容，没有数据支撑，暂时没有渲染细节 &ndash;&gt;-->
+<!--        <view class="card-other" :style="cardOtherstyle"></view>-->
         <!-- 商店项 -->
         <view
           class="business-list"

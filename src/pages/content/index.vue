@@ -51,10 +51,13 @@
         </view>
       </view>
       <view class="menu-box" :style="`height:${menuHeight}px`">
-        <view class="menu-box-left" :style="`height:${menuHeight}px`">
+        <view class="menu-box-left">
           <view
             class="menu-box-item"
-            :class="[item.active ? 'menu-box-item-active' : '']"
+            :class="[
+              item.active ? 'menu-box-item-active' : '',
+              index !== 0 || index !== 1 ? 'menu-box-item1' : '',
+            ]"
             v-for="(item, index) in sidebar"
             :key="index"
             @click="ClickMenu(index)"
@@ -85,12 +88,33 @@
       </view>
     </view>
     <!--      购物车-->
-    <view class="shoppingCart" @click="ShowBill">¥ {{ showPrice }}</view>
+    <view class="shoppingCart" @click="ShowBill"
+      >¥ {{ showPrice }}
+      <view v-if="billBtn" class="settlement">去结算</view>
+    </view>
+    <view class="bilCard" :class="[billBtn ? 'bilCard-up' : '']">
+      <view class="bilCard-top">
+        <view class="bilCard-text">已选商品</view>
+        <view class="bilCard-clear" @click="ClearBill">清空购物车</view>
+      </view>
+      <view class="bilCard-item-box">
+        <view class="bilCard-item" v-for="(item, index) in billCommodity" :key="index">
+          <image :src="item.picture" class="real-dishes-img"></image>
+          <view class="bilCard-item-name">{{ item.name }}</view>
+          <view class="bilCard-item-price">¥{{ item.min_price }}</view>
+          <view class="bilCard-item-sub" v-if="item.number" @click="BilSub(item, index)">-</view>
+          <view class="bilCard-item-number" v-if="item.number">{{ item.number }}</view>
+          <view class="bilCard-item-add" @click="BilAdd(item, index)">+</view>
+        </view>
+      </view>
+    </view>
+    <view class="film1" v-if="billBtn" @click="billBtn = false"></view>
   </view>
 </template>
 
 <script setup lang="ts">
 import { onMounted, getCurrentInstance, ref } from 'vue'
+import { onHide } from '@dcloudio/uni-app'
 import type { restaurant } from '@/types/restaurant'
 import type { Menu, MeunSidebar, commodityList, Spu } from '@/types/commodity'
 import { useRestaurantStore } from '@/stores/modules/restaurant'
@@ -103,37 +127,85 @@ let sidebar = ref<MeunSidebar>([])
 let sidebarType = ref<number>(0)
 let commodityLists = ref<commodityList>([])
 let clickCommodity = ref<Array<Spu>>([])
+let billCommodity = ref<Array<Spu>>([])
 let menuHeight = ref<string>()
-let showPrice = ref<string>()
+let price = ref<number>(0)
+let showPrice = ref<string>('0')
+let billBtn = ref<boolean>(false)
 
 onMounted(() => {
-  showPrice.value = restaurantStore.price!.toFixed(2)
-  if (restaurantStore.menu !== undefined) {
-    commodityLists.value = restaurantStore.menu
-  }
-  GetHeight()
-  GetLocalData()
   GetCommodityData()
-  //GetBusinessData()
+  GetLocalData()
+  GetHeight()
 })
-
+//页面隐藏
+onHide(() => {
+  SafeLocalData()
+})
+function ClearBill() {
+  billCommodity.value = []
+  commodityLists.value?.forEach((item, index) => {
+    item.forEach((item1, index1) => {
+      item1.number = 0
+    })
+  })
+  price.value = 0
+  showPrice.value = 0
+  billBtn.value = false
+}
+function BilAdd(item, index) {
+  commodityLists.value[item.indexA][item.indexB].number++
+  clickCommodity.value = commodityLists.value[item.indexA]
+  price.value += item.min_price
+  billCommodity.value[index].number++
+  showPrice.value = price.value.toFixed(2)
+}
+function BilSub(item, index) {
+  commodityLists.value[item.indexA][item.indexB].number--
+  clickCommodity.value = commodityLists.value[item.indexA]
+  price.value -= item.min_price
+  billCommodity.value[index].number--
+  showPrice.value = price.value.toFixed(2)
+  if (billCommodity.value[index].number === 0) {
+    billCommodity.value.splice(index, 1)
+  }
+  if (billCommodity.value.length === 0) {
+    billBtn.value = false
+  }
+}
 function ShowBill() {
-  console.log("结账")
+  console.log('结账')
+  billCommodity.value = []
+  commodityLists.value?.forEach((item, index) => {
+    item.forEach((item1, index1) => {
+      if (item1.number !== 0) {
+        billCommodity.value.push({
+          name: item1.name,
+          picture: item1.picture,
+          min_price: item1.min_price,
+          number: item1.number,
+          indexA: index,
+          indexB: index1,
+        })
+      }
+    })
+  })
+  if (billCommodity.value.length !== 0) {
+    billBtn.value = true
+  }
 }
 
 function Add(item, index) {
-  commodityLists.value[sidebarType.value][index].number++
+  commodityLists.value[sidebarType.value][index].number += 1
   clickCommodity.value = commodityLists.value[sidebarType.value]
-  restaurantStore.setMenu(commodityLists.value)
-  restaurantStore.setPrice(restaurantStore.price + item.min_price)
-  showPrice.value = restaurantStore.price.toFixed(2)
+  price.value += item.min_price
+  showPrice.value = price.value.toFixed(2)
 }
 function Sub(item, index) {
   commodityLists.value[sidebarType.value][index].number--
   clickCommodity.value = commodityLists.value[sidebarType.value]
-  restaurantStore.setMenu(commodityLists.value)
-  restaurantStore.setPrice(restaurantStore.price - item.min_price)
-  showPrice.value = restaurantStore.price.toFixed(2)
+  price.value -= item.min_price
+  showPrice.value = price.value.toFixed(2)
 }
 //获取菜单栏的高度
 function GetHeight() {
@@ -162,12 +234,20 @@ function GetBusinessData() {
 
   eventChannel.on('businessData', function (data: any) {
     businessData.value = data.data
-    console.log(businessData.value)
-    console.log(restaurantStore.profile)
   })
 }
 function GetLocalData() {
   businessData.value = restaurantStore.profile
+  price.value = restaurantStore.price
+  showPrice.value = price.value.toFixed(2)
+  if (restaurantStore.menu !== undefined) {
+    commodityLists.value = [...restaurantStore.menu]
+  }
+}
+function SafeLocalData() {
+  restaurantStore.setPrice(price.value)
+  commodityLists.value.length = 11
+  restaurantStore.setMenu(commodityLists.value)
 }
 function GetCommodityData() {
   uni
@@ -177,8 +257,6 @@ function GetCommodityData() {
     })
     .then((res) => {
       commodityData.value = res.data.data
-      console.log(commodityData.value?.food_spu_tags)
-
       commodityData.value?.food_spu_tags.forEach((item) => {
         sidebar.value.push({
           name: item.name,
@@ -190,7 +268,6 @@ function GetCommodityData() {
       })
       clickCommodity.value = commodityLists.value[0]
       sidebar.value[0].active = true
-      restaurantStore.setMenu(commodityLists.value)
     })
     .catch((err) => {
       console.log(err)
@@ -229,5 +306,12 @@ page {
   width: 100%;
   height: 100%;
   position: relative;
+}
+.film1 {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 99;
 }
 </style>

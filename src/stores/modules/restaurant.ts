@@ -10,6 +10,13 @@ export const useRestaurantStore = defineStore(
     const profile = ref<restaurant>()
     const price = ref<number>()
     const menu = ref<commodityList>()
+    const sidebarType = ref<number>()
+    const setSidebarType = (val: number) => {
+      sidebarType.value = val
+    }
+    const clearSidebarType = (val: number) => {
+      sidebarType.value = 0
+    }
     const setProfile = (val: restaurant) => {
       profile.value = val
     }
@@ -41,6 +48,9 @@ export const useRestaurantStore = defineStore(
       menu,
       setMenu,
       clearMenu,
+      sidebarType,
+      setSidebarType,
+      clearSidebarType,
     }
   },
   {
