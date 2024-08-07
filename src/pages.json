@@ -26,7 +26,16 @@
         "navigationBarTextStyle": "white",
         "navigationBarTitleText": "内容"
       }
+    },
+    {
+      "path": "pages/bill/index",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "提交订单"
+      }
     }
+
   ],
   "globalStyle": {
     "navigationBarTextStyle": "black",

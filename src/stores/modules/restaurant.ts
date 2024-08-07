@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import type { restaurant } from '@/types/restaurant'
-import type { commodityList } from '@/types/commodity'
+import type { commodityList, Spu } from '@/types/commodity'
 
 // 定义 Store
 export const useRestaurantStore = defineStore(
@@ -11,6 +11,13 @@ export const useRestaurantStore = defineStore(
     const price = ref<number>()
     const menu = ref<commodityList>()
     const sidebarType = ref<number>()
+    const bailData = ref<Array<Spu>>()
+    const setBailData = (val: Array<Spu>) => {
+      bailData.value = val
+    }
+    const clearBailData = (val: Array<Spu>) => {
+      bailData.value = undefined
+    }
     const setSidebarType = (val: number) => {
       sidebarType.value = val
     }
@@ -51,6 +58,9 @@ export const useRestaurantStore = defineStore(
       sidebarType,
       setSidebarType,
       clearSidebarType,
+      bailData,
+      setBailData,
+      clearBailData
     }
   },
   {

@@ -90,7 +90,7 @@
     <!--      购物车-->
     <view class="shoppingCart" @click="ShowBill"
       >¥ {{ showPrice }}
-      <view v-if="billBtn" class="settlement">去结算</view>
+      <view v-if="billBtn" class="settlement" @click="Pay">去结算</view>
     </view>
     <view class="bilCard" :class="[billBtn ? 'bilCard-up' : '']">
       <view class="bilCard-top">
@@ -272,6 +272,15 @@ function GetCommodityData() {
     .catch((err) => {
       console.log(err)
     })
+}
+function Pay() {
+  console.log('付钱')
+  uni.navigateTo({
+    url: '/pages/bill/index',
+    success: function () {
+      restaurantStore.setBailData(billCommodity.value)
+    },
+  })
 }
 //点餐
 function Order() {
