@@ -50,7 +50,7 @@
           <input placeholder="搜索" class="search-input" />
         </view>
       </view>
-      <view class="menu-box" :style="`height:${menuHeight}px`">
+      <view class="menu-box">
         <view class="menu-box-left">
           <view
             class="menu-box-item"
@@ -274,11 +274,11 @@ function GetCommodityData() {
     })
 }
 function Pay() {
-  console.log('付钱')
   uni.navigateTo({
     url: '/pages/bill/index',
     success: function () {
       restaurantStore.setBailData(billCommodity.value)
+      restaurantStore.setPrice(price.value)
     },
   })
 }
@@ -306,15 +306,11 @@ function Evaluat() {
 @import 'style/face.css';
 @import 'style/toolbar.css';
 @import 'style/menu.css';
-page {
-  background-color: #e2e0e0;
-  height: 100%;
-  overflow: hidden;
-}
 .overtrue {
-  width: 100%;
-  height: 100%;
+  height: 1624rpx;
+  width: 750rpx;
   position: relative;
+  overflow: hidden;
 }
 .film1 {
   position: absolute;

@@ -19,8 +19,8 @@
       </view>
       <!-- 商店滚动区 -->
       <scroll-view class="body-scroll" scroll-y="true" @scroll="onScroll">
-<!--        &lt;!&ndash; 其他内容，没有数据支撑，暂时没有渲染细节 &ndash;&gt;-->
-<!--        <view class="card-other" :style="cardOtherstyle"></view>-->
+        <!--        &lt;!&ndash; 其他内容，没有数据支撑，暂时没有渲染细节 &ndash;&gt;-->
+        <!--        <view class="card-other" :style="cardOtherstyle"></view>-->
         <!-- 商店项 -->
         <view
           class="business-list"
@@ -54,7 +54,6 @@ import { ref } from 'vue'
 
 ////变量区
 let cardOtherstyle = ref() //其他内容卡片的样式，用于滑动隐藏
-let upImgStyle = ref() //图片伸缩样式
 let businessList = ref() //商店列表
 const restaurantStore = useRestaurantStore()
 
@@ -70,7 +69,7 @@ onHide(() => {
   console.log('index Hide')
 })
 
-function Test(value) {
+function Test(value: any) {
   console.log('test', value)
   // uni
   //   .createSelectorQuery()
@@ -128,14 +127,9 @@ function InRestaurant(item: restaurant) {
 </script>
 
 <style lang="scss" scoped>
-page {
-  background-color: #e2e0e0;
-  height: 100%;
-  overflow: hidden;
-}
 .overtrue {
-  height: 100%;
-  width: 100%;
+  height: 1624rpx;
+  width: 750rpx;
 }
 .head {
   width: 100%;
@@ -207,8 +201,9 @@ page {
   left: 5%;
 }
 .search-button {
+  background-color: rgb(245, 228, 109);
   position: absolute;
-  width: 15%;
+  width: 20%;
   height: 80%;
   border-radius: 50px;
   font-size: 15px;
@@ -241,13 +236,13 @@ uni-button:after {
 .business-box {
   width: 100%;
   height: 90%;
-  background-color: antiquewhite;
+  background-color: #000000;
   border-radius: 11px;
   transition: transform ease 0.5s;
 }
 .business-list {
   width: 100%;
-  height: 25%;
+  height: 20%;
   border-radius: 11px;
   padding: 2%;
   margin-bottom: 2%;
@@ -271,8 +266,8 @@ uni-button:after {
   position: relative;
 }
 .up-img {
-  width: 30%;
-  height: 88%;
+  width: 200rpx;
+  height: 200rpx;
   border-radius: 5px;
   margin-left: 1%;
   margin-right: 1%;
@@ -280,7 +275,9 @@ uni-button:after {
 .up-certificate {
   width: 8%;
   height: 14%;
-  margin-right: 1%;
+  margin-top: 2%;
+  margin-left: 2%;
+  margin-right: 2%;
   background-color: black;
   transform: translateY(-278%);
   border-radius: 4px;
@@ -292,21 +289,22 @@ uni-button:after {
   align-items: center;
 }
 .up-name {
+  margin-top: 3%;
   width: 55%;
   height: 25%;
-  white-space: nowrap; /* 不换行 */
-  overflow: hidden; /* 溢出隐藏 */
-  text-overflow: ellipsis; /* 显示省略号 */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   font-size: 35rpx;
-  font-weight: 1000;
+  font-weight: 900;
   transform: translateY(-150%);
 }
 .up-samllTitle1 {
   position: absolute;
   width: 55%;
   height: 15%;
-  left: 32%;
-  top: 20%;
+  left: 33%;
+  top: 25%;
   font-size: 23rpx;
   color: #949191;
 }
@@ -315,7 +313,7 @@ uni-button:after {
   width: 55%;
   height: 15%;
   left: 33%;
-  top: 37%;
+  top: 40%;
   font-size: 23rpx;
   color: #949191;
 }
@@ -324,7 +322,7 @@ uni-button:after {
   width: 55%;
   height: 15%;
   right: -35%;
-  top: 37%;
+  top: 40%;
   font-size: 23rpx;
   color: #949191;
 }
