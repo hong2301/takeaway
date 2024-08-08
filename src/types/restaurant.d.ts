@@ -9,4 +9,5 @@ export type restaurant = {
   distance: string
   mtWmPoiId: number
   picUrl: string | ''
+  ad_mark: boolean | false
 }

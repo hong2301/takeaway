@@ -8,20 +8,21 @@ export const useRestaurantStore = defineStore(
   'restaurant',
   () => {
     const profile = ref<restaurant>()
-    const price = ref<number>()
+    const price = ref<number>(0)
     const menu = ref<commodityList>()
     const sidebarType = ref<number>()
     const bailData = ref<Array<Spu>>()
+
     const setBailData = (val: Array<Spu>) => {
       bailData.value = val
     }
-    const clearBailData = (val: Array<Spu>) => {
+    const clearBailData = () => {
       bailData.value = undefined
     }
     const setSidebarType = (val: number) => {
       sidebarType.value = val
     }
-    const clearSidebarType = (val: number) => {
+    const clearSidebarType = () => {
       sidebarType.value = 0
     }
     const setProfile = (val: restaurant) => {
@@ -60,7 +61,7 @@ export const useRestaurantStore = defineStore(
       clearSidebarType,
       bailData,
       setBailData,
-      clearBailData
+      clearBailData,
     }
   },
   {

@@ -8,14 +8,18 @@ export type MenuItem = {
   name: string
   spus: Array<Spu>
 }
+
 export type Spu = {
   picture: string
   name: string
   min_price: number
   number: number | 0
+  indexA: number
+  indexB: number
 }
 
 export type MeunSidebar = Array<MeunSidebarItem>
+
 export type MeunSidebarItem = {
   name: string
   icon: string | ''

@@ -14,15 +14,18 @@
       <view class="pay-card">
         <view class="pay-name">{{ resName }}</view>
         <view class="pay-box">
-          <view class="pay-item" v-for="(item, index) in dataList">
+          <view class="pay-item" v-for="(item, index) in dataList" :key="index">
             <image :src="item.picture" class="pay-item-img"></image>
             <view class="pay-item-name">{{ item.name }}</view>
             <view class="pay-item-number">x{{ item.number }}</view>
-            <view class="pay-item-price">¥{{ item.number * item.min_price }}</view>
+            <view class="pay-item-price"
+              >¥{{ Math.round(item.number * item.min_price * 100) / 100 }}</view
+            >
           </view>
         </view>
-        <view class="bigprice">小计 ¥
-          <view class="bigprice-value">{{showPrice}}</view>
+        <view class="bigprice"
+          >小计 ¥
+          <view class="bigprice-value">{{ showPrice }}</view>
         </view>
       </view>
     </view>
@@ -36,36 +39,33 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { onHide } from '@dcloudio/uni-app'
 import { useRestaurantStore } from '@/stores/modules/restaurant'
 import type { Spu } from '@/types/commodity'
+
 const restaurantStore = useRestaurantStore()
-let showPrice = ref<number>(0)
+let showPrice = ref<string>()
 let resName = ref<string>()
 let dataList = ref<Array<Spu>>()
 
 onMounted(() => {
-  console.log(123)
-  console.log(restaurantStore.bailData)
   dataList.value = restaurantStore.bailData
-  showPrice.value = restaurantStore.price
+  showPrice.value = restaurantStore.price.toFixed(2)
   resName.value = restaurantStore.profile?.shopName
 })
-onHide(() => {})
 </script>
 
 <style scoped lang="scss">
 .overtrue {
+  background-color: rgb(242, 242, 242);
   height: 1624rpx;
   width: 750rpx;
   position: relative;
   overflow: hidden;
-  background-color: rgb(242, 242, 242);
 }
 .navigation {
+  background-color: white;
   width: 100%;
   height: 11%;
-  background-color: white;
 }
 .body {
   width: 100%;
@@ -73,10 +73,10 @@ onHide(() => {})
   padding: 3%;
 }
 .address-card {
+  background-color: white;
   width: 100%;
   height: 20%;
   border-radius: 10px;
-  background-color: #ffffff;
   padding: 5%;
   display: flex;
   flex-direction: column;
@@ -98,7 +98,6 @@ onHide(() => {})
   top: 38%;
   left: 26%;
   width: 30%;
-  height: 20%;
   height: 20%;
   font-size: 30rpx;
 }
@@ -144,10 +143,10 @@ onHide(() => {})
 }
 .pay-box {
   width: 100%;
-  border-top: 1px solid rgb(0,0,0,0.05);
-  border-bottom: 1px solid rgb(0,0,0,0.05);
+  border-top: 1px solid rgb(0, 0, 0, 0.05);
+  border-bottom: 1px solid rgb(0, 0, 0, 0.05);
 }
-.bigprice{
+.bigprice {
   margin-top: 5%;
   width: 100%;
   height: 15%;
@@ -157,7 +156,7 @@ onHide(() => {})
   align-items: center;
   font-size: 30rpx;
 }
-.bigprice-value{
+.bigprice-value {
   font-size: 50rpx;
   margin-left: 6%;
   margin-bottom: 3%;
