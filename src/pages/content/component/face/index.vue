@@ -1,32 +1,50 @@
 <template>
   <view class="face">
     <view class="face-up">
-      <image class="face-up-img" :src="businessData?.picUrl"></image>
-      <view class="face-up-name">{{ businessData?.shopName }}</view>
+      <image class="face-up-img" :src="businessData?.poi_info.pic_url"></image>
+      <view class="face-up-name">{{ businessData?.poi_info.name }}</view>
       <view class="face-up-name-right"></view>
-      <view class="face-up-text"></view>
-      <view class="face-up-notice"
-        >公告: 欢迎光临肯德基宅急送，专业外送，全程保温，准时送达!sdfsdkfsdfnsjkdfns</view
-      >
+      <view class="face-up-text">{{}}</view>
+      <view class="face-up-notice">{{ businessData?.poi_info.bulletin }}</view>
       <view class="face-up-collect">收藏</view>
     </view>
     <view class="face-down">
-      <view class="face-down-brand">5.88折起</view>
+      <view
+        class="face-down-brand"
+        :key="index"
+        v-for="(item, index) in businessData?.poi_info.label_info"
+        >{{ item.content }}</view
+      >
     </view>
   </view>
 </template>
 
 <script setup lang="ts">
-import type { restaurant } from '@/types/restaurant'
+import type { restaurantMore } from '@/types/restaurant'
 import { onMounted, ref } from 'vue'
 import { useRestaurantStore } from '@/stores/modules/restaurant'
 
 const restaurantStore = useRestaurantStore()
-const businessData = ref<restaurant>()
+const businessData = ref<restaurantMore>()
 
 onMounted(() => {
-  businessData.value = restaurantStore.profile
+  GetCommodityData()
 })
+
+function GetCommodityData() {
+  uni
+    .request({
+      url: 'https://console-mock.apipost.cn/mock/2574b6b3-81e9-4929-9b74-a38530e92e3e/spuData?apipost_id=35c074',
+      method: 'GET',
+    })
+    .then((res: any) => {
+      businessData.value = res.data.data
+      console.log('详细信息', businessData.value.poi_info)
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+}
 </script>
 
 <style scoped lang="scss">
@@ -119,7 +137,6 @@ onMounted(() => {
 }
 .face-down-brand {
   background-color: rgb(250, 250, 250);
-  width: 15%;
   height: 55%;
   display: flex;
   justify-content: center;
@@ -128,5 +145,6 @@ onMounted(() => {
   font-size: 20rpx;
   border: 1px solid rgb(250, 203, 198);
   border-radius: 5px;
+  margin-right: 3%;
 }
 </style>
