@@ -10,4 +10,5 @@ export type restaurant = {
   mtWmPoiId: number
   picUrl: string | ''
   ad_mark: boolean | false
+  discounts2: Array<{ info: string; iconUrl: string; activityId: number }>
 }

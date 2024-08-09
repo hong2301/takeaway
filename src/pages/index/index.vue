@@ -13,21 +13,21 @@
         <input placeholder="蛙来哒·牛蛙" class="search-input" @input="Cin" />
         <button class="search-button" @click="Search">搜索</button>
       </view>
-      <view class="icon-box">
-        <view class="icon-box-up">
-          <view class="icon-box-up-item" v-for="(item, index) in iconDataUP" :key="index">
-            <image class="icon-box-up-item-img" :src="item.icon"></image>
-            <view class="icon-box-up-item-text">{{ item.name }}</view>
-          </view>
-        </view>
-        <view class="icon-box--down">
-          <view class="icon-box-down-item" v-for="(item, index) in iconDataDown" :key="index">
-            <image class="icon-box-down-item-img" :src="item.icon"></image>
-            <view class="icon-box-down-item-text">{{ item.name }}</view>
-          </view>
-        </view>
-      </view>
       <scroll-view class="body-scroll" scroll-y>
+        <view class="icon-box">
+          <view class="icon-box-up">
+            <view class="icon-box-up-item" v-for="(item, index) in iconDataUP" :key="index">
+              <image class="icon-box-up-item-img" :src="item.icon"></image>
+              <view class="icon-box-up-item-text">{{ item.name }}</view>
+            </view>
+          </view>
+          <view class="icon-box--down">
+            <view class="icon-box-down-item" v-for="(item, index) in iconDataDown" :key="index">
+              <image class="icon-box-down-item-img" :src="item.icon"></image>
+              <view class="icon-box-down-item-text">{{ item.name }}</view>
+            </view>
+          </view>
+        </view>
         <view class="sorry" v-if="businessList?.length === 0">抱歉没有商家信息</view>
         <view
           class="business-list"
@@ -42,6 +42,23 @@
             <view class="up-samllTitle1">{{ item.monthSalesTip }} {{ item.averagePriceTip }}</view>
             <view class="up-samllTitle2">{{ item.minPriceTip }} {{ item.shippingFeeTip }}</view>
             <view class="up-samllTitle3">{{ item.deliveryTimeTip }} {{ item.distance }}</view>
+            <view class="up-label">
+              <view class="up-label-item" v-for="(item1, index1) in item.discounts2" :key="index1">
+                <image
+                  class="up-label-item-icon"
+                  :src="item1.iconUrl"
+                  v-if="item1.iconUrl !== ''"
+                ></image>
+                <view
+                  class="up-label-item-text"
+                  :class="[
+                    item1.activityId === 2 ? 'up-label-item-text-reduction' : '',
+                    item1.activityId === 17 ? 'up-label-item-text-discount' : '',
+                  ]"
+                  >{{ item1.info }}</view
+                >
+              </view>
+            </view>
           </view>
           <view v-if="item.ad_mark" class="item-down">
             <view class="down-img"></view>
@@ -96,6 +113,7 @@ function GetBusiness() {
     .then((res: any) => {
       let data: { shopList: Array<restaurant> } = res.data.data
       businessList.value = data.shopList
+      console.log(businessList.value)
     })
     .catch((err) => {
       console.log(err)
@@ -323,7 +341,42 @@ function Search() {
   right: -35%;
   top: 40%;
   font-size: 23rpx;
-  color: #949191;
+}
+.up-label {
+  position: absolute;
+  width: 67%;
+  height: 35%;
+  right: 0;
+  top: 58%;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.up-label-item {
+  display: flex;
+  height: 45%;
+  margin-right: 4%;
+}
+.up-label-item-icon {
+  width: 34rpx;
+  height: 34rpx;
+}
+.up-label-item-text {
+  height: 100%;
+  font-size: 20rpx;
+  transform: translate(2%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 3px;
+}
+.up-label-item-text-discount {
+  border: 1px solid rgba(231, 63, 63, 0.5);
+  color: #ee5a5a;
+}
+.up-label-item-text-reduction {
+  border: 1px solid rgba(231, 217, 63, 0.5);
+  color: #ee985a;
 }
 .item-down {
   width: 100%;
@@ -341,7 +394,7 @@ function Search() {
   width: 100%;
   height: 30%;
   margin-top: 2%;
-  margin-bottom: 2%;
+  margin-bottom: 3%;
 }
 .icon-box-up {
   width: 100%;
