@@ -75,6 +75,10 @@ onHide(() => {
 uni.$on('toolbar', function (data) {
   console.log('监听到事件来自 toolbar ，携带参数 type 为：' + data.type)
 })
+uni.$on('shopping', function (data) {
+  price.value = data.price
+  commodityLists.value = data.commodityLists
+})
 
 function Add(item: { min_price: number }, index: number) {
   commodityLists.value[sidebarType.value][index].number += 1

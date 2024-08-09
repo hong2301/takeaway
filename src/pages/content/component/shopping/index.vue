@@ -42,9 +42,12 @@ uni.$on('shopping', function (data: { price: number; commodityLists: commodityLi
   commodityLists.value = data.commodityLists
 })
 
-onHide(() => {
-  restaurantStore.setPrice(price.value)
-})
+function Communicate(){
+  uni.$emit('shopping', {
+    price: price.value,
+    commodityLists: commodityLists.value,
+  })
+}
 
 function ShowBill() {
   console.log('结账')
@@ -84,8 +87,10 @@ function ClearBill() {
     })
   })
   price.value = 0
-  showPrice.value = ''
+  showPrice.value = '0'
   billBtn.value = false
+  restaurantStore.setPrice(price.value)
+  Communicate()
 }
 function BilAdd(item: Spu, index: number) {
   commodityLists.value[item.indexA][item.indexB].number++
@@ -93,6 +98,7 @@ function BilAdd(item: Spu, index: number) {
   price.value += item.min_price
   showPrice.value = price.value.toFixed(2)
   billCommodity.value[index].number++
+  Communicate()
 }
 function BilSub(item: Spu, index: number) {
   commodityLists.value[item.indexA][item.indexB].number--
@@ -106,6 +112,7 @@ function BilSub(item: Spu, index: number) {
   if (billCommodity.value.length === 0) {
     billBtn.value = false
   }
+  Communicate()
 }
 </script>
 
