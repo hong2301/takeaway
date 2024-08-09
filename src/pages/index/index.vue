@@ -13,6 +13,20 @@
         <input placeholder="蛙来哒·牛蛙" class="search-input" @input="Cin" />
         <button class="search-button" @click="Search">搜索</button>
       </view>
+      <view class="icon-box">
+        <view class="icon-box-up">
+          <view class="icon-box-up-item" v-for="(item, index) in iconDataUP" :key="index">
+            <image class="icon-box-up-item-img" :src="item.icon"></image>
+            <view class="icon-box-up-item-text">{{ item.name }}</view>
+          </view>
+        </view>
+        <view class="icon-box--down">
+          <view class="icon-box-down-item" v-for="(item, index) in iconDataDown" :key="index">
+            <image class="icon-box-down-item-img" :src="item.icon"></image>
+            <view class="icon-box-down-item-text">{{ item.name }}</view>
+          </view>
+        </view>
+      </view>
       <scroll-view class="body-scroll" scroll-y>
         <view class="sorry" v-if="businessList?.length === 0">抱歉没有商家信息</view>
         <view
@@ -47,10 +61,31 @@ import { ref } from 'vue'
 let businessList = ref<Array<restaurant>>()
 const restaurantStore = useRestaurantStore()
 let inputStr: string = ''
+let iconData: Array<{ icon: string; name: string }> = []
+let iconDataUP = ref<Array<{ icon: string; name: string }>>()
+let iconDataDown = ref<Array<{ icon: string; name: string }>>()
 
 onShow(() => {
   GetBusiness()
+  GetIcon()
 })
+
+function GetIcon() {
+  uni
+    .request({
+      url: 'https://console-mock.apipost.cn/mock/2574b6b3-81e9-4929-9b74-a38530e92e3e/homeData?apipost_id=df8048',
+      method: 'GET',
+    })
+    .then((res: any) => {
+      let temp: { kingkongList: Array<{ icon: string; name: string }> } = res.data.data
+      iconData = temp.kingkongList
+      iconDataUP.value = iconData.splice(0, 5)
+      iconDataDown.value = iconData.splice(5)
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+}
 
 function GetBusiness() {
   uni
@@ -295,11 +330,72 @@ function Search() {
   height: 40%;
   background-color: aquamarine;
 }
-.sorry{
+.sorry {
   width: 100%;
   height: 40%;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.icon-box {
+  width: 100%;
+  height: 30%;
+  margin-top: 2%;
+  margin-bottom: 2%;
+}
+.icon-box-up {
+  width: 100%;
+  height: 40%;
+  display: flex;
+}
+.icon-box-up-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 187.5rpx;
+  height: 100%;
+  cursor: pointer;
+}
+.icon-box-up-item-img {
+  width: 110rpx;
+  height: 110rpx;
+}
+.icon-box-up-item-text {
+  width: 100%;
+  height: 40%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.icon-box--down {
+  width: 100%;
+  height: 60%;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.icon-box-down-item {
+  width: 100rpx;
+  aspect-ratio: 1;
+  margin: 2%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+}
+.icon-box-down-item-img {
+  width: 70rpx;
+  height: 70rpx;
+}
+.icon-box-down-item-text {
+  width: 100%;
+  height: 30%;
+  transform: translateY(50%);
+  font-size: 25rpx;
+  padding-left: 2%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>
