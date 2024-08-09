@@ -1,43 +1,50 @@
 <template>
   <view class="overtrue">
     <view class="head">
+      <view class="Return" @click="Return">{{ returnText }}</view>
       <view class="film"></view>
     </view>
     <view class="body">
       <Face></Face>
       <Toolbar></Toolbar>
       <view class="menu-box">
-        <view class="menu-box-left">
-          <view
-            class="menu-box-item"
-            :class="[item.active ? 'menu-box-item-active' : '', index <= 1 ? 'menu-box-item1' : '']"
-            v-for="(item, index) in sidebar"
-            :key="index"
-            @click="ClickMenu(index)"
-          >
-            <image :src="item.icon" v-if="item.icon !== ''" class="menu-box-item-icon"></image>
-            <view class="menu-box-item-text"> {{ item.name }}</view>
-          </view>
-        </view>
-        <scroll-view class="menu-box-right" scroll-y>
-          <view v-if="sidebarType === 0" class="menu-box-right-recommend">
-            <view class="recommend-sign">
-              <view class="recommend-sign-fire">
-                <view class="recommend-sign-fire-icon"></view>
-                <view class="recommend-sign-fire-text">招牌</view>
-              </view>
-              <view class="recommend-sign-boss">老板推荐</view>
+        <SearchContent></SearchContent>
+        <view v-if="toolbarType === 1" class="menu-content">
+          <view class="menu-box-left">
+            <view
+              class="menu-box-item"
+              :class="[
+                item.active ? 'menu-box-item-active' : '',
+                index <= 1 ? 'menu-box-item1' : '',
+              ]"
+              v-for="(item, index) in sidebar"
+              :key="index"
+              @click="ClickMenu(index)"
+            >
+              <image :src="item.icon" v-if="item.icon !== ''" class="menu-box-item-icon"></image>
+              <view class="menu-box-item-text"> {{ item.name }}</view>
             </view>
           </view>
-          <view class="real-dishes" v-for="(com, index1) in clickCommodity" :key="index1">
-            <image :src="com.picture" class="real-dishes-img"></image>
-            <view class="real-dishes-name">{{ com.name }}</view>
-            <view class="real-dishes-price">¥{{ com.min_price }}</view>
-            <view class="real-dishes-sub" v-if="com.number" @click="Sub(com, index1)">-</view>
-            <view class="real-dishes-number" v-if="com.number">{{ com.number }}</view>
-            <view class="real-dishes-add" @click="Add(com, index1)">+</view>
-          </view>
-        </scroll-view>
+          <scroll-view class="menu-box-right" scroll-y>
+            <view v-if="sidebarType === 0" class="menu-box-right-recommend">
+              <view class="recommend-sign">
+                <view class="recommend-sign-fire">
+                  <view class="recommend-sign-fire-icon"></view>
+                  <view class="recommend-sign-fire-text">招牌</view>
+                </view>
+                <view class="recommend-sign-boss">老板推荐</view>
+              </view>
+            </view>
+            <view class="real-dishes" v-for="(com, index1) in clickCommodity" :key="index1">
+              <image :src="com.picture" class="real-dishes-img"></image>
+              <view class="real-dishes-name">{{ com.name }}</view>
+              <view class="real-dishes-price">¥{{ com.min_price }}</view>
+              <view class="real-dishes-sub" v-if="com.number" @click="Sub(com, index1)">-</view>
+              <view class="real-dishes-number" v-if="com.number">{{ com.number }}</view>
+              <view class="real-dishes-add" @click="Add(com, index1)">+</view>
+            </view>
+          </scroll-view>
+        </view>
       </view>
     </view>
 
@@ -53,6 +60,7 @@ import { useRestaurantStore } from '@/stores/modules/restaurant'
 import Face from '@/pages/content/component/face/index.vue'
 import Toolbar from '@/pages/content/component/toolbar/index.vue'
 import Shopping from '@/pages/content/component/shopping/index.vue'
+import SearchContent from '@/pages/content/component/searchContent/index.vue'
 
 const restaurantStore = useRestaurantStore()
 let commodityData = ref<Menu>()
@@ -62,6 +70,10 @@ let commodityLists = ref<commodityList>([])
 let clickCommodity = ref<Array<Spu>>([])
 let price = ref<number>(0)
 let showPrice = ref<string>('0')
+let returnText = ref<string>('<')
+let toolbarType = ref<number>(1)
+let searchStr = ref<string>('')
+let searchItem = ref<Array<Spu>>([])
 
 onMounted(() => {
   GetCommodityData()
@@ -73,10 +85,47 @@ onHide(() => {
 })
 
 uni.$on('toolbar', function (data) {
-  console.log('监听到事件来自 toolbar ，携带参数 type 为：' + data.type)
+  toolbarType.value = data.type
 })
 uni.$on('shopping', function (data) {
   price.value = data.price
+  commodityLists.value = data.commodityLists
+})
+uni.$on('search', function (data: { str: string }) {
+  let btn = 1
+  searchStr.value = data.str
+  searchItem.value=[]
+  commodityLists.value.forEach((item, index) => {
+    item.forEach((item1, index1) => {
+      if (item1.name.includes(searchStr.value)) {
+        searchItem.value.forEach((item2) => {
+          if (item1.name === item2.name) {
+            btn = 0
+          }
+        })
+        if (btn) {
+          item1.indexA = index
+          item1.indexB = index1
+          searchItem.value.push(item1)
+        }
+      }
+    })
+  })
+
+  if (searchStr.value.length !== 0) {
+    toolbarType.value = 0
+    uni.$emit('searchData', {
+      searchItem: searchItem.value,
+      commodityLists: commodityLists.value,
+    })
+  } else {
+    toolbarType.value = 1
+  }
+  uni.$emit('toolbar', {
+    type: toolbarType.value,
+  })
+})
+uni.$on('SearchData', function (data: { commodityLists: commodityList }) {
   commodityLists.value = data.commodityLists
 })
 
@@ -147,6 +196,9 @@ function GetCommodityData() {
     .catch((err) => {
       console.log(err)
     })
+}
+function Return() {
+  uni.navigateBack()
 }
 </script>
 

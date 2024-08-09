@@ -19,6 +19,12 @@
   display: flex;
   flex-direction: row;
 }
+.menu-content{
+  width: 100%;
+  height: 1442.7616rpx;
+  display: flex;
+  flex-direction: row;
+}
 
 
 

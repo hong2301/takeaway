@@ -23,7 +23,7 @@
     <view class="toolbar-spell">好友拼单</view>
     <view class="search-box">
       <view class="search-icon"></view>
-      <input placeholder="搜索" class="search-input" />
+      <input placeholder="搜索" class="search-input" v-model="inputStr" @input="Cin" />
     </view>
   </view>
 </template>
@@ -32,7 +32,13 @@
 import { ref } from 'vue'
 
 let toolbarType = ref<number>(1)
+let inputStr = ref<string>('')
 
+function Cin() {
+  uni.$emit('search', {
+    str: inputStr.value,
+  })
+}
 function Order() {
   toolbarType.value = 1
   Communicate()
