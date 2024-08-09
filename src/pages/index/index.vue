@@ -10,10 +10,11 @@
     <view class="body">
       <view class="search-box">
         <view class="search-icon"></view>
-        <input placeholder="蛙来哒·牛蛙" class="search-input" />
-        <button class="search-button">搜索</button>
+        <input placeholder="蛙来哒·牛蛙" class="search-input" @input="Cin" />
+        <button class="search-button" @click="Search">搜索</button>
       </view>
       <scroll-view class="body-scroll" scroll-y>
+        <view class="sorry" v-if="businessList?.length === 0">抱歉没有商家信息</view>
         <view
           class="business-list"
           v-for="(item, index) in businessList"
@@ -45,6 +46,7 @@ import { ref } from 'vue'
 
 let businessList = ref<Array<restaurant>>()
 const restaurantStore = useRestaurantStore()
+let inputStr: string = ''
 
 onShow(() => {
   GetBusiness()
@@ -76,6 +78,22 @@ function InRestaurant(item: restaurant) {
       res.eventChannel.emit('businessData', { data: item })
     },
   })
+}
+
+function Cin(value: { detail: { value: string } }) {
+  inputStr = value.detail.value
+  if (inputStr.length === 0) {
+    GetBusiness()
+  }
+}
+function Search() {
+  let businessListTemp: Array<restaurant> = []
+  businessList.value?.forEach((item) => {
+    if (item.shopName.includes(inputStr)) {
+      businessListTemp.push(item)
+    }
+  })
+  businessList.value = businessListTemp
 }
 </script>
 
@@ -164,10 +182,11 @@ function InRestaurant(item: restaurant) {
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 10;
 }
-.search-button:hover {
-  background: linear-gradient(to top right, rgb(238, 214, 32), rgb(245, 191, 109));
-}
+//.search-button:hover {
+//  background: linear-gradient(to top right, rgb(238, 214, 32), rgb(245, 191, 109));
+//}
 .search-button:active {
   background: rgb(238, 214, 32);
 }
@@ -275,5 +294,12 @@ function InRestaurant(item: restaurant) {
   width: 100%;
   height: 40%;
   background-color: aquamarine;
+}
+.sorry{
+  width: 100%;
+  height: 40%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>

@@ -2,6 +2,7 @@
   <view class="shoppingCart" @click="ShowBill"
     >¥ {{ showPrice }}
     <view v-if="billBtn" class="settlement" @click="Pay">去结算</view>
+    <view v-if="!billBtn" class="settlement" >打开</view>
   </view>
   <view class="bilCard" :class="[billBtn ? 'bilCard-up' : '']">
     <view class="bilCard-top">
