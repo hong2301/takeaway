@@ -4,9 +4,9 @@
       <image :src="com.picture" class="search-dishes-img"></image>
       <view class="search-dishes-name">{{ com.name }}</view>
       <view class="search-dishes-price">¥{{ com.min_price }}</view>
-      <view class="search-dishes-sub" v-if="com.number" @click="Sub(com, index1)">-</view>
+      <view class="search-dishes-sub" v-if="com.number" @click="Sub(com)">-</view>
       <view class="search-dishes-number" v-if="com.number">{{ com.number }}</view>
-      <view class="search-dishes-add" @click="Add(com, index1)">+</view>
+      <view class="search-dishes-add" @click="Add(com)">+</view>
     </view>
   </view>
 </template>
@@ -31,7 +31,7 @@ uni.$on('searchData', function (data: { searchItem: Array<Spu>; commodityLists: 
   commodityLists.value = data.commodityLists
 })
 
-function Sub(com: Spu, index: number) {
+function Sub(com: Spu) {
   price.value -= com.min_price
   commodityLists.value[com.indexA][com.indexB].number--
   uni.$emit('shopping', {
@@ -39,7 +39,7 @@ function Sub(com: Spu, index: number) {
     commodityLists: commodityLists.value,
   })
 }
-function Add(com: Spu, index: number) {
+function Add(com: Spu) {
   price.value += com.min_price
   commodityLists.value[com.indexA][com.indexB].number++
   uni.$emit('shopping', {

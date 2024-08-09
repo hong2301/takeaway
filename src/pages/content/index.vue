@@ -94,7 +94,7 @@ uni.$on('shopping', function (data) {
 uni.$on('search', function (data: { str: string }) {
   let btn = 1
   searchStr.value = data.str
-  searchItem.value=[]
+  searchItem.value = []
   commodityLists.value.forEach((item, index) => {
     item.forEach((item1, index1) => {
       if (item1.name.includes(searchStr.value)) {

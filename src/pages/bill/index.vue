@@ -1,6 +1,8 @@
 <template>
   <view class="overtrue">
-    <view class="navigation"></view>
+    <view class="navigation">
+      <view class="return" @click="Return">{{ returnText }}</view>
+    </view>
     <view class="body">
       <view class="address-card">
         <view class="address-text">鲸山云科技(珠海)有限公司A座601</view>
@@ -46,31 +48,49 @@ const restaurantStore = useRestaurantStore()
 let showPrice = ref<string>()
 let resName = ref<string>()
 let dataList = ref<Array<Spu>>()
+let returnText = ref<string>('<')
 
 onMounted(() => {
   dataList.value = restaurantStore.bailData
   showPrice.value = restaurantStore.price.toFixed(2)
   resName.value = restaurantStore.profile?.shopName
 })
+function Return() {
+  uni.navigateBack()
+}
 </script>
 
 <style scoped lang="scss">
 .overtrue {
-  background-color: rgb(242, 242, 242);
   height: 1624rpx;
   width: 750rpx;
   position: relative;
   overflow: hidden;
+  background-color: #f1eeee;
 }
 .navigation {
+  position: relative;
   background-color: white;
   width: 100%;
   height: 11%;
+}
+.return {
+  position: absolute;
+  width: 10%;
+  height: 35%;
+  top: 55%;
+  left: 2%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 50rpx;
+  cursor: pointer;
 }
 .body {
   width: 100%;
   height: 81%;
   padding: 3%;
+  background-color: #f1eeee;
 }
 .address-card {
   background-color: white;
