@@ -1,7 +1,7 @@
 <template>
   <view class="overtrue">
     <view class="navigation">
-      <view class="return" @click="Return">{{ returnText }}</view>
+      <view class="return" @click="Return"></view>
     </view>
     <view class="body">
       <view class="address-card">
@@ -48,7 +48,6 @@ const restaurantStore = useRestaurantStore()
 let showPrice = ref<string>()
 let resName = ref<string>()
 let dataList = ref<Array<Spu>>()
-let returnText = ref<string>('<')
 
 onMounted(() => {
   dataList.value = restaurantStore.bailData
@@ -76,15 +75,17 @@ function Return() {
 }
 .return {
   position: absolute;
-  width: 10%;
-  height: 35%;
-  top: 55%;
-  left: 2%;
+  width: 5%;
+  aspect-ratio: 1;
+  top: 64%;
+  left: 5%;
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 50rpx;
   cursor: pointer;
+  background: url('@/static/zuojiantou.svg') no-repeat;
+  background-size: contain;
 }
 .body {
   width: 100%;

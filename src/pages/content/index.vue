@@ -1,7 +1,11 @@
 <template>
   <view class="overtrue">
     <view class="head">
-      <view class="Return" @click="Return">{{ returnText }}</view>
+      <view class="Return" @click="Return">
+        <view class="return-left"></view>
+        |
+        <view class="return-right"></view>
+      </view>
       <view class="film"></view>
     </view>
     <view class="body">
@@ -89,7 +93,6 @@ let sidebarType = ref<number>(0)
 let commodityLists = ref<commodityList>([])
 let price = ref<number>(0)
 let showPrice = ref<string>('0')
-let returnText = ref<string>('<')
 let toolbarType = ref<number>(1)
 let searchStr = ref<string>('')
 let searchItem = ref<Array<Spu>>([])
@@ -301,22 +304,35 @@ function Return() {
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
 }
+.return-left {
+  width: 20%;
+  aspect-ratio: 1;
+  margin-right: 8%;
+  background: url('@/static/zuojiantouW.svg') no-repeat;
+  background-size: contain;
+}
+.return-right {
+  width: 26%;
+  height: 100%;
+  margin-left: 8%;
+  background: url('@/static/list.svg') no-repeat;
+  background-size: cover;
+}
 .Return {
   position: absolute;
-  display: flex;
-  justify-items: center;
-  align-items: center;
-  width: 10%;
+  width: 20%;
   height: 30%;
   top: 55%;
   left: 2%;
-  padding-left: 3.5%;
-  border: 1px solid #cccccc;
+  border: 1px solid #8c8484;
   border-radius: 50px;
-  color: white;
   font-size: 30rpx;
-  font-weight: 600;
   cursor: pointer;
+  font-weight: 400;
+  color: #949191;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .body {
   top: 11.6%;
