@@ -16,6 +16,7 @@ export type Spu = {
   number: number | 0
   indexA: number
   indexB: number
+  bookmark: string | ''
 }
 
 export type MeunSidebar = Array<MeunSidebarItem>
@@ -24,6 +25,8 @@ export type MeunSidebarItem = {
   name: string
   icon: string | ''
   active: Boolean | false
+  sidebarMax: number | 0
+  sidebarMin: number | 0
 }
 
 export type commodityList = Array<Array<Spu>>

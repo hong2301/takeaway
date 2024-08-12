@@ -113,7 +113,6 @@ function GetBusiness() {
     .then((res: any) => {
       let data: { shopList: Array<restaurant> } = res.data.data
       businessList.value = data.shopList
-      console.log(businessList.value)
     })
     .catch((err) => {
       console.log(err)
