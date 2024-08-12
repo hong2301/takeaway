@@ -55,6 +55,12 @@
               <view class="real-dishes-sub" v-if="com.number" @click="Sub(com, index1)">-</view>
               <view class="real-dishes-number" v-if="com.number">{{ com.number }}</view>
               <view class="real-dishes-add" @click="Add(com, index1)">+</view>
+              <view class="real-dishes-sales">{{ com.month_saled_content }}</view>
+              <view class="real-dishes-red"
+                >{{ com.promotion.activity_text }}|{{ com.promotion.addition_text }}</view
+              >
+              <view class="real-dishes-evaluate">好评率{{ com.evaluate }}%</view>
+              <view class="real-dishes-originPrice"></view>
             </view>
             <view class="blank"></view>
           </scroll-view>
@@ -81,7 +87,6 @@ let commodityData = ref<Menu>()
 let sidebar = ref<MeunSidebar>([])
 let sidebarType = ref<number>(0)
 let commodityLists = ref<commodityList>([])
-let clickCommodity = ref<Array<Spu>>([])
 let price = ref<number>(0)
 let showPrice = ref<string>('0')
 let returnText = ref<string>('<')
@@ -179,7 +184,6 @@ function ClickMenu(index: number) {
     item.active = false
   })
   sidebar.value[index].active = true
-  clickCommodity.value = commodityLists.value[index]
 }
 
 function GetLocalData() {
@@ -201,7 +205,6 @@ function GetCommodityData() {
       method: 'GET',
     })
     .then((res: any) => {
-      console.log(res)
       commodityData.value = res.data.data
       commodityData.value?.food_spu_tags.forEach((item, index1) => {
         sidebar.value.push({
@@ -221,8 +224,24 @@ function GetCommodityData() {
         })
       })
       SetSpider()
-      clickCommodity.value = commodityLists.value[0]
       sidebar.value[0].active = true
+      let temp: number = 0
+      commodityLists.value.forEach((item) => {
+        item.forEach((item1) => {
+          temp = (item1.praise_num / item1.month_saled) * 100
+          item1.evaluate = temp.toFixed(0)
+
+          temp = Number(item1.promotion.activity_text.replace('折', '')) / 10
+          if (temp === 0) {
+            item1.originPrice = item1.min_price
+          } else {
+            item1.originPrice = item1.min_price / temp
+          }
+          item1.originPrice = Number(item1.originPrice.toFixed(2))
+
+          console.log(item1)
+        })
+      })
     })
     .catch((err) => {
       console.log(err)
@@ -266,7 +285,7 @@ function Return() {
 
 <style lang="scss" scoped>
 .overtrue {
-  height: 1624rpx;
+  height: 100vh;
   width: 750rpx;
   position: relative;
   overflow: hidden;
@@ -411,7 +430,7 @@ function Return() {
 .real-dishes-price {
   position: absolute;
   top: 70%;
-  left: 34%;
+  left: 32%;
   width: 15%;
   height: 25%;
   font-size: 30rpx;
@@ -434,6 +453,43 @@ function Return() {
 }
 .real-dishes-add:active {
   background-color: rgb(143, 114, 39);
+}
+.real-dishes-sales {
+  position: absolute;
+  width: 20%;
+  height: 15%;
+  left: 32%;
+  top: 35%;
+  font-size: 25rpx;
+  color: #949191;
+  display: flex;
+  justify-content: left;
+  align-items: center;
+}
+.real-dishes-red {
+  position: absolute;
+  height: 15%;
+  top: 54%;
+  left: 32%;
+  color: #f56969;
+  font-size: 18rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 3px;
+  border: 1px solid #fcbebe;
+}
+.real-dishes-evaluate {
+  position: absolute;
+  width: 20%;
+  height: 15%;
+  top: 35%;
+  left: 50%;
+  font-size: 25rpx;
+  color: #949191;
+  display: flex;
+  justify-content: left;
+  align-items: center;
 }
 .real-dishes-sub {
   position: absolute;

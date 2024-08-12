@@ -10,8 +10,17 @@ export type MenuItem = {
 }
 
 export type Spu = {
+  month_saled: number
+  month_saled_content: string
+  promotion: {
+    activity_text: string
+    addition_text: string
+  }
+  praise_num: number
+  evaluate: string
   picture: string
   name: string
+  originPrice: number
   min_price: number
   number: number | 0
   indexA: number

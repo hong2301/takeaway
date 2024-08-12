@@ -151,7 +151,7 @@ function Search() {
 
 <style lang="scss" scoped>
 .overtrue {
-  height: 1624rpx;
+  height: 100vh;
   width: 750rpx;
 }
 .head {
@@ -393,7 +393,7 @@ function Search() {
   width: 100%;
   height: 30%;
   margin-top: 2%;
-  margin-bottom: 3%;
+  margin-bottom: 10%;
 }
 .icon-box-up {
   width: 100%;
@@ -416,6 +416,7 @@ function Search() {
   width: 100%;
   height: 40%;
   display: flex;
+  font-size: 30rpx;
   justify-content: center;
   align-items: center;
 }
